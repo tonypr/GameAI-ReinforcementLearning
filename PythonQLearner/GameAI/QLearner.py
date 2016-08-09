@@ -1,15 +1,13 @@
 import random
 
 class QLearner(object):
-    def __init__(self, start_state, actions, transition, reward, epsilon, alpha, gamma):
-        self.start_state = start_state
+    def __init__(self, actions, transition, reward, epsilon, alpha, gamma):
         self.actions = actions
         self.transition = transition
         self.reward = reward
         self.epsilon = epsilon
         self.alpha = alpha
         self.gamma = gamma
-        self.state = start_state
         self.Q = {}
 
     def getQ(self, q_pair):
@@ -40,8 +38,7 @@ class QLearner(object):
         self.Q[q_pair] += self.alpha * q_update
         return reward
 
-
-    def learn(self, state):
+    def exploreState(self, state):
         rand = random.random()
         if rand < self.epsilon:
             action = random.choice(self.actions(state))
@@ -49,11 +46,12 @@ class QLearner(object):
             action = self.bestQ(state)[0]
         reward = self.updateQ(state, action)
         new_state = self.transition(state, action)
-        return action, new_state, reward
+        return action
 
 class QLearnerGameAI(QLearner):
     def __init__(self, game, epsilon, alpha, gamma):
-        QLearner.__init__(self, game.start, game.actions, game.transition, game.reward, epsilon, alpha, gamma)
+        QLearner.__init__(self, game.actions, game.transition, game.reward, epsilon, alpha, gamma)
+        self.game = game
         self.numGamesLearned = 0
 
     def learnedMove(self, state):
@@ -61,25 +59,19 @@ class QLearnerGameAI(QLearner):
         return move
 
     def learnSteps(self, numSteps):
-        state = self.start_state
+        state = self.game.startNewGame()
         for i in xrange(numSteps):
-            action, state, reward = self.learn(state)
-            win = abs(reward) == 1
-            tie = len(self.actions(state)) == 0
-            if tie or win:
-                state = self.start_state
+            action = self.exploreState(state)
+            state = self.game.takeAction(action)
+            if not self.game.isGameRunning:
+                self.game.startNewGame()
 
     def learnGames(self, numGames):
         for i in xrange(numGames):
-            gameNotFinished = True
-            state = self.start_state
-            while gameNotFinished:
-                action, state, reward = self.learn(state)
-                win = abs(reward) == 1
-                tie = len(self.actions(state)) == 0
-                gameNotFinished = not (tie or win)
+            state = self.game.startNewGame()
+
+            while self.game.isGameRunning:
+                action = self.exploreState(state)
+                state = self.game.takeAction(action)
+
             self.numGamesLearned += 1
-            if self.numGamesLearned > 50000 and self.epsilon > 0.25:
-                self.epsilon = 0.2
-            elif self.numGamesLearned > 100000 and self.epsilon == 0.2:
-                self.epsilon = 0.1

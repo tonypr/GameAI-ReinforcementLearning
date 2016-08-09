@@ -14,6 +14,19 @@ class Connect4Game(Game):
         self.w = 7
         self.h = 6
         self.start = tuple([(0,)*self.h for i in range(self.w)])
+        self.isGameRunning = False
+
+    def startNewGame(self):
+        self.isGameRunning = True
+        self.state = self.start
+        return self.state
+        
+    def takeAction(self, action):
+        self.state = self.transition(self.state, action)
+        winner = self.checkGameOver(self.state, action)
+        if winner != -1:
+            self.isGameRunning = False
+        return self.state
 
     def actions(self, state):
         return [i+1 for i in range(self.w) if state[i][-1] == 0]

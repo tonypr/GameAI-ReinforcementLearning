@@ -12,6 +12,19 @@ class TicTacToeGame(Game):
         self.AIpath = AIsDirectory
         self.players = 2
         self.start = ((), ())
+        self.isGameRunning = False
+
+    def startNewGame(self):
+        self.isGameRunning = True
+        self.state = self.start
+        return self.state
+
+    def takeAction(self, action):
+        self.state = self.transition(self.state, action)
+        winner = self.checkGameOver(self.state, action)
+        if winner != -1:
+            self.isGameRunning = False
+        return self.state
 
     def actions(self, state):
         return [i for i in range(1, 10) if (i not in state[0] and i not in state[1])]
