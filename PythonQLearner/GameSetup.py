@@ -2,6 +2,7 @@ from GameAI.QLearner import QLearnerGameAI
 import cPickle as pickle
 from os import path, makedirs
 import time
+import random
 
 def ensureDir(f):
     d = path.dirname(f)
@@ -21,6 +22,7 @@ class Game(object):
             state = self.transition(state, move)
             turn += 1
         self.displayGameEnd(state)
+        return self.checkGameOver(state, move)
 
 class HumanPlayer(object):
     def __init__(self, game):
@@ -36,6 +38,15 @@ class HumanPlayer(object):
             else:
                 print("That move is not available. Try again!")
 
+class RandomPlayer(object):
+    def __init__(self, game):
+        self.game = game
+
+    def play(self, state):
+        actions = self.game.actions(state)
+        time.sleep(1)
+        return random.choice(actions)
+
 class AI(object):
     def __init__(self, game, epsilon, alpha, gamma):
         self.game = game
@@ -49,7 +60,7 @@ class AI(object):
 
     def play(self, state):
         time.sleep(1)
-        return int(self.gameAI.learnedMove(state))
+        return self.gameAI.learnedMove(state)
 
     def getAIFilePath(self, name):
         gamePath = self.game.AIpath

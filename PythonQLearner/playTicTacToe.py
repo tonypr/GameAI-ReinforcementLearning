@@ -18,6 +18,6 @@ TicTacToeAI.learnGames(numGames)
 
 players = [human, TicTacToeAI]
 while True:
-    TicTacToe.playGame(players)
+    winner = TicTacToe.playGame(players)
     time.sleep(2)
     print("\n\n\n")
