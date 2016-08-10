@@ -20,6 +20,7 @@ class TicTacToeGame(Game):
         return self.state
 
     def takeAction(self, action):
+        assert action in self.actions(self.state)
         self.state = self.transition(self.state, action)
         winner = self.checkGameOver(self.state, action)
         if winner != -1:
@@ -30,6 +31,7 @@ class TicTacToeGame(Game):
         return [i for i in range(1, 10) if (i not in state[0] and i not in state[1])]
 
     def transition(self, state, action):
+        assert action in self.actions(state)
         turn = (len(state[0]) + len(state[1])) % 2
         temp_state = list(state)
         temp_plays = list(state[turn])
