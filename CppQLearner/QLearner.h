@@ -8,46 +8,46 @@
 /**
  * QLearner provides the basic QLearning algorithm to its derived classes.
  */
-template<typename GameState, typename Action, class key_hash, class key_equal>
+template<typename State, typename Action, class key_hash, class key_equal>
 class QLearner {
-  typedef std::tuple<const GameState&, const Action&> QPair;
+  typedef std::tuple<const State&, const Action&> QPair;
   typedef std::tuple<const Action&, const double&> BestQTuple;
-  typedef std::tuple<const Action&, const GameState&, const double&> LearnResults;
+  typedef std::tuple<const Action&, const State&, const double&> LearnResults;
   typedef std::unordered_map<const QPair&, const double&, key_hash, key_equal> QLearnerMap;
 
 public:
-  QLearner(
-    GameState start, double alpha, double epsilon, double gamma
-  ) :
+  QLearner(double alpha, double epsilon, double gamma) :
     alpha_(alpha),
     epsilon_(epsilon),
-    gamma_(gamma),
-    startState_(start) {
-      uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-      std::seed_seq ss{uint32_t(timeSeed & 0xffffffff), uint32_t(timeSeed>>32)};
-      rng_.seed(ss);
-    }
+    gamma_(gamma)
+  {
+    uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    std::seed_seq ss{uint32_t(timeSeed & 0xffffffff), uint32_t(timeSeed>>32)};
+    rng_.seed(ss);
+  }
 
 protected:
   double alpha_;
   double epsilon_;
   double gamma_;
   QLearnerMap Q_;
-  GameState startState_;
 
   /* Used for generating randomness */
   std::mt19937_64 rng_;
 
-  virtual const std::vector<Action> getActions(const GameState& state);
-  virtual const GameState transition(const GameState& state, const Action& action);
-  virtual const double reward(const GameState& state, const Action& action);
+  virtual const std::vector<Action>& getActions(const State& state) = 0;
+
+  virtual
+  const State& transition(const State& state, const Action& action) = 0;
+
+  virtual
+  const double& reward(const State& state, const Action& action) = 0;
 
   /**
    * Returns the Q value for a given pair in the Q value map.
    */
   const double getQ(const QPair& qPair) {
-    auto qPairIt = Q_.find(qPair);
-    if (qPairIt == Q_.end()) {
+    if (Q_.find(qPair) == Q_.end()) {
       Q_[qPair] = 0;
     }
     return Q_[qPair];
@@ -57,54 +57,46 @@ protected:
    * Given a game state, returns the best action known so far as well as its
    * Q value.
    */
-  BestQTuple bestQ(const GameState& state) {
-    auto actions = getActions(state);
+  BestQTuple bestQ(const State& state) {
+    const auto& actions = getActions(state);
     if (actions.empty()) {
-      return std::make_tuple<Action, double>(0, 0);
+      return std::make_tuple(0, 0);
     }
 
     auto maxAction = actions[0];
-    const auto qPair = std::make_tuple<const GameState&, const Action&>(state, maxAction);
-    auto maxQ = getQ(qPair);
-    for (const auto& action : actions) {
-      const auto tempQPair =
-        std::make_tuple<const GameState&, const Action&>(state, action);
-      const auto curQ = getQ(tempQPair);
+    auto maxQ = getQ(std::make_tuple(state, maxAction));
 
+    for (const auto action : actions) {
+      const auto curQ = getQ(std::make_tuple(state, action));
       if (curQ > maxQ) {
         maxAction = action;
         maxQ = curQ;
       }
     }
 
-    return std::make_tuple<const Action&, const double&>(maxAction, maxQ);
+    return std::make_tuple(maxAction, maxQ);
   }
 
   /**
    * Explores an action for a given state and updates the Q value map
    * accordingly.
-   * Returns the reward of the new state.
    */
-  const double updateQ(const GameState& state, const Action& action) {
-    auto newState = transition(state, action);
-    auto qReward = reward(newState, action);
-    auto qPair = std::make_tuple<const GameState&, const Action&>(state, action);
-    auto qValue = getQ(qPair);
-    auto qUpdate = qReward - gamma_* std::get<1>(bestQ(newState)) - qValue;
+  void updateQ(const State& state, const Action& action) {
+    const auto newState = transition(state, action);
+    const auto qPair = std::make_tuple(state, action);
+    const auto& maxQ = std::get<1>(bestQ(newState));
+    const auto& qUpdate = reward(newState, action) - gamma_*maxQ - getQ(qPair);
     Q_[qPair] += alpha_ * qUpdate;
-    return qReward;
   }
 
   /**
-   * Takes one learning step on a given state.
-   * Returns a tuple of:
-   *    - the action explored
-   *    - the new state transitioned to
-   *    - the reward from the new state
+   * Explores a state by either taking a random move with prob. epsilon or
+   * a learned move with prob. 1-epsilon
    */
-   LearnResults learn(const GameState& state) {
+   const Action& exploreState(const State& state) {
      std::uniform_real_distribution<double> unif(0, 1);
      const auto& rand = unif(rng_);
+
      Action action;
      if (rand < epsilon_) {
        const auto& actions = getActions(state);
@@ -113,66 +105,51 @@ protected:
      } else {
        action = std::get<0>(bestQ(state));
      }
-     const auto& newState = transition(state, action);
-     const auto& reward = updateQ(state, action);
-     return std::make_tuple<const Action&, const GameState&, const double&>(
-       action,
-       newState,
-       reward
-     );
+     updateQ(state, action);
+     return action;
    }
 };
 
 template<typename GameState, typename Action, class key_hash, class key_equal>
 class QLearnerGameAI : public QLearner<GameState, Action, key_hash, key_equal> {
 public:
-  QLearnerGameAI(
-    GameState start, double alpha, double epsilon, double gamma
-  ) :
-    QLearner<GameState, Action, key_hash, key_equal>(start, alpha, epsilon, gamma),
-    numGamesLearned_(0)
+  QLearnerGameAI(double alpha, double epsilon, double gamma) :
+    QLearner<GameState, Action, key_hash, key_equal>(alpha, epsilon, gamma)
   { }
+
+  bool isGameRunning = false;
+  int numGamesLearned = 0;
+
+  virtual const GameState& startNewGame() = 0;
+  virtual const GameState& takeAction(const Action& action) = 0;
 
   const Action& learnedMove(const GameState& state) {
     return std::get<0>(bestQ(state));
   }
 
-  void learnSteps(const int& stepCount) {
-    GameState state = this->startState_;
-    for(int i = 0; i < stepCount; i++) {
-      Action action;
-      double reward;
-      std::tie(action, state, reward) = learn(state);
-
-      bool win = std::abs(reward) == 1;
-      bool tie = getActions(state).size() == 0;
-      if (tie || win) {
-        state = this->startState_;
+  void learnSteps(const int& numSteps) {
+    auto state = startNewGame();
+    for(int64_t i = 0; i < numSteps; i++) {
+      const auto& action = exploreState(state);
+      const auto& state = takeAction(action);
+      if (!isGameRunning) {
+        numGamesLearned++;
+        state = startNewGame();
       }
     }
   }
 
-  void learnGames(const int& gameCount) {
-    GameState state;
-    Action action;
-    double reward;
+  void learnGames(const int& numGames) {
+    for (int64_t i = 0; i < numGames; i++) {
+      auto state = startNewGame();
 
-    for (int i = 0; i < gameCount; i++) {
-      bool gameNotFinished = false;
-      state = this->startState_;
-      while (gameNotFinished) {
-        std::tie(action, state, reward) = learn(state);
-
-        // Check if game finished
-        bool win = std::abs(reward) == 1;
-        bool tie = getActions(state).size() == 0;
-        gameNotFinished = !(tie || win);
+      while (isGameRunning) {
+        const auto& action = exploreState(state);
+        const auto& state = takeAction(action);
       }
-      numGamesLearned_++;
+
+      numGamesLearned++;
     }
   }
-
-private:
-  int numGamesLearned_;
 };
 #endif
