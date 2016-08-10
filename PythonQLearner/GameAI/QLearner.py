@@ -36,7 +36,6 @@ class QLearner(object):
         q_value = self.getQ(q_pair)
         q_update = reward - self.gamma * self.bestQ(new_state)[1] - q_value
         self.Q[q_pair] += self.alpha * q_update
-        return reward
 
     def exploreState(self, state):
         rand = random.random()
@@ -44,8 +43,7 @@ class QLearner(object):
             action = random.choice(self.actions(state))
         else:
             action = self.bestQ(state)[0]
-        reward = self.updateQ(state, action)
-        new_state = self.transition(state, action)
+        self.updateQ(state, action)
         return action
 
 class QLearnerGameAI(QLearner):
@@ -64,7 +62,7 @@ class QLearnerGameAI(QLearner):
             action = self.exploreState(state)
             state = self.game.takeAction(action)
             if not self.game.isGameRunning:
-                self.game.startNewGame()
+                state = self.game.startNewGame()
 
     def learnGames(self, numGames):
         for i in xrange(numGames):
