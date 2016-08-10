@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "TicTacToe.h"
 
 const GameState TicTacToe::startNewGame() {
