@@ -5,6 +5,7 @@ const GameState TicTacToe::startNewGame() {
   return a;
 }
 
+>>>>>>> Basic TicTacToe class now compiling
 const GameState TicTacToe::takeAction(const Action& action) {
   std::vector<std::vector<int>> a;
   return a;
