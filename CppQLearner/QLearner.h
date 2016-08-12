@@ -8,12 +8,10 @@
 /**
  * QLearner provides the basic QLearning algorithm to its derived classes.
  */
-template<typename State, typename Action, class key_hash, class key_equal>
+template<typename State, typename Action, typename QPair, typename QLearnerMap>
 class QLearner {
-  typedef std::tuple<const State&, const Action&> QPair;
   typedef std::tuple<const Action&, const double&> BestQTuple;
   typedef std::tuple<const Action&, const State&, const double&> LearnResults;
-  typedef std::unordered_map<const QPair&, const double&, key_hash, key_equal> QLearnerMap;
 
 public:
   QLearner(double alpha, double epsilon, double gamma) :
@@ -110,18 +108,18 @@ protected:
    }
 };
 
-template<typename GameState, typename Action, class key_hash, class key_equal>
-class QLearnerGameAI : public QLearner<GameState, Action, key_hash, key_equal> {
+template<typename GameState, typename Action, typename QPair, typename QLearnerMap>
+class QLearnerGameAI : public QLearner<GameState, Action, QPair, QLearnerMap> {
 public:
   QLearnerGameAI(double alpha, double epsilon, double gamma) :
-    QLearner<GameState, Action, key_hash, key_equal>(alpha, epsilon, gamma)
+    QLearner<GameState, Action, QPair, QLearnerMap>(alpha, epsilon, gamma)
   { }
 
   bool isGameRunning = false;
   int numGamesLearned = 0;
 
-  virtual const GameState& startNewGame() = 0;
-  virtual const GameState& takeAction(const Action& action) = 0;
+  virtual const GameState startNewGame() = 0;
+  virtual const GameState takeAction(const Action& action) = 0;
 
   const Action& learnedMove(const GameState& state) {
     return std::get<0>(bestQ(state));
