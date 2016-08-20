@@ -13,7 +13,7 @@ gamma = 0.9
 
 TicTacToeAI = AI(TicTacToe, epsilon, alpha, gamma)
 
-numGames = 100000
+numGames = 500000
 TicTacToeAI.learnGames(numGames)
 
 players = [human, TicTacToeAI]

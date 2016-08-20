@@ -48,6 +48,7 @@ class TicTacToeGame(Game):
             for num in win:
                 if num not in plays:
                     win_check = False
+                    break
             if win_check:
                 won = True
                 break
