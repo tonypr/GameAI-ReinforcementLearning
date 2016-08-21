@@ -49,18 +49,19 @@ public:
   const GameState startNewGame();
   const GameState takeAction(const Action& action);
 
-  const std::vector<Action> actions(const GameState& state);
-  const GameState transition(const GameState& state, const Action& action);
-  const double reward(const GameState& state, const Action& prevMove);
+  const std::vector<Action> actions(const GameState& state) const;
+  const GameState transition(const GameState& state, const Action& action) const;
+  const double reward(const GameState& state, const Action& prevMove) const;
 
-  const bool checkWin(const GameState& state, const int& player);
-  const bool checkTie(const GameState& state);
-  const int checkGameOver(const GameState& state, const Action& prevMove);
+  const bool checkWin(const GameState& state, const int& player) const;
+  const bool checkTie(const GameState& state) const;
+  const int checkGameOver(const GameState& state, const Action& prevMove) const;
 
-  const std::string getBoard(const GameState& state);
-  void displayBoard(const GameState& state);
-  void displayGameEnd(const GameState& state);
-  void displayQPair(const GameState& state, const Action& action);
+  const std::string getBoard(const GameState& state) const;
+  void displayBoard(const GameState& state) const;
+  void displayGameEnd(const GameState& state) const;
+  void displayQPair(const GameState& state, const Action& action) const;
+  const Action getPlayerMove(const GameState& state) const;
 
   GameState state_;
   int players = 2;

@@ -19,7 +19,7 @@ const GameState TicTacToe::takeAction(const Action& action) {
   return state_;
 }
 
-const std::vector<Action> TicTacToe::actions(const GameState& state) {
+const std::vector<Action> TicTacToe::actions(const GameState& state) const {
   std::vector<Action> actions = {};
   for (int i = 1; i <= 9; i++) {
     bool player_1 =
@@ -33,7 +33,7 @@ const std::vector<Action> TicTacToe::actions(const GameState& state) {
   return actions;
 }
 
-const GameState TicTacToe::transition(const GameState& state, const Action& action) {
+const GameState TicTacToe::transition(const GameState& state, const Action& action) const {
   int turn = (state[0].size() + state[1].size()) % 2;
   auto newState = state;
   auto playersMoves = state[turn];
@@ -42,7 +42,7 @@ const GameState TicTacToe::transition(const GameState& state, const Action& acti
   return newState;
 }
 
-const double TicTacToe::reward(const GameState& state, const Action& prevMove) {
+const double TicTacToe::reward(const GameState& state, const Action& prevMove) const {
   auto winner = checkGameOver(state, prevMove);
   if (winner > 0) {
     return 1;
@@ -50,7 +50,7 @@ const double TicTacToe::reward(const GameState& state, const Action& prevMove) {
   return 0;
 }
 
-const bool TicTacToe::checkWin(const GameState& state, const int& player) {
+const bool TicTacToe::checkWin(const GameState& state, const int& player) const {
   auto plays = state[player-1];
   std::array<std::array<int, 3>, 8> wins = {{
     {1,2,3}, {4,5,6}, {7,8,9}, {1,4,7}, {2,5,8}, {3,6,9}, {1,5,9}, {3,5,7}
@@ -76,11 +76,11 @@ const bool TicTacToe::checkWin(const GameState& state, const int& player) {
   return won;
 }
 
-const bool TicTacToe::checkTie(const GameState& state) {
+const bool TicTacToe::checkTie(const GameState& state) const {
   return state[0].size() + state[1].size() == 9;
 }
 
-const int TicTacToe::checkGameOver(const GameState& state, const Action& prevMove) {
+const int TicTacToe::checkGameOver(const GameState& state, const Action& prevMove) const {
   for (int player = 1; player <= players; player++) {
     if (checkWin(state, player)) {
       return player;
@@ -92,7 +92,7 @@ const int TicTacToe::checkGameOver(const GameState& state, const Action& prevMov
   return -1;
 }
 
-const std::string TicTacToe::getBoard(const GameState& state) {
+const std::string TicTacToe::getBoard(const GameState& state) const {
   std::string board(9, ' ');
   const auto& x = state[0];
   const auto& circle = state[1];
@@ -108,7 +108,7 @@ const std::string TicTacToe::getBoard(const GameState& state) {
   return board;
 }
 
-void TicTacToe::displayBoard(const GameState& state) {
+void TicTacToe::displayBoard(const GameState& state) const {
   const auto& board = getBoard(state);
   auto printRow = [&] (int row) {
     std::cout << "   |   |\n";
@@ -127,7 +127,7 @@ void TicTacToe::displayBoard(const GameState& state) {
   printRow(2);
 }
 
-void TicTacToe::displayGameEnd(const GameState& state) {
+void TicTacToe::displayGameEnd(const GameState& state) const {
   displayBoard(state);
   auto winner = checkGameOver(state, 0);
   if (winner == 1) {
@@ -139,7 +139,7 @@ void TicTacToe::displayGameEnd(const GameState& state) {
   }
 }
 
-void TicTacToe::displayQPair(const GameState& state, const Action& action) {
+void TicTacToe::displayQPair(const GameState& state, const Action& action) const {
   std::cout << "Displaying Q Pair:\n";
   std::cout << "Action: " << action << "\n";
   auto displayMoves = [&] (std::vector<Action> moves) {
@@ -154,4 +154,25 @@ void TicTacToe::displayQPair(const GameState& state, const Action& action) {
   std::cout << ", ";
   displayMoves(state[1]);
   std::cout << ")\n";
+}
+
+const Action TicTacToe::getPlayerMove(const GameState& state) const {
+  const auto availableMoves = actions(state);
+  Action move;
+  while(true) {
+    std::cout << "Available moves:";
+    for (const auto& action : availableMoves) {
+      std::cout << " " << action;
+    }
+    std::cout << "\n";
+    std::cout << "Please pick one of the available moves: ";
+    std::cin >> move;
+    const auto findMove =
+      std::find(availableMoves.begin(), availableMoves.end(), move);
+    if (findMove != availableMoves.end()) {
+      return move;
+    } else {
+      std::cout << "That move is not available. Try again!";
+    }
+  }
 }
