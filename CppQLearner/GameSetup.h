@@ -44,7 +44,6 @@ template<class Game, typename GameState, typename Action, typename QPair, typena
 class AI : public Player<GameState, Action> {
 public:
   AI(Game& game, double epsilon, double alpha, double gamma) :
-    game_(game),
     gameAI_(game, alpha, epsilon, gamma)
   { }
 
@@ -62,7 +61,6 @@ public:
 
   QLearnerGameAI<Game, GameState, Action, QPair, QLearnerMap> gameAI_;
 private:
-  Game game_ = Game();
 
 };
 

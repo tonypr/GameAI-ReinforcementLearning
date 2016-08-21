@@ -13,13 +13,10 @@ int main() {
 
   auto ticTacToeAI = std::make_shared<AI<TicTacToe, GameState, Action, QPair, QLearnerMap>>(ticTacToeGame, epsilon, alpha, gamma);
   ticTacToeAI->learnGames(500000);
-  std::cout << "\nQ map size: " << ticTacToeAI->gameAI_.Q_.size()<< "\n";
-  GameState start;
-  std::cout << "Best Q: " << std::get<1>(ticTacToeAI->gameAI_.bestQ(start)) << "\n";
 
-  // std::vector<std::shared_ptr<Player<GameState, Action>>> players {human, ticTacToeAI};
-  // while (true) {
-  //   ticTacToeGame.playGame(players);
-  //   std::cout << "\n\n\n";
-  // }
+  std::vector<std::shared_ptr<Player<GameState, Action>>> players {human, ticTacToeAI};
+  while (true) {
+    ticTacToeGame.playGame(players);
+    std::cout << "\n\n\n";
+  }
 }

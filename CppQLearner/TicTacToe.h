@@ -6,7 +6,7 @@
 
 typedef std::array<std::vector<int>, 2> GameState;
 typedef int Action;
-typedef std::tuple<const GameState&, const Action&> QPair;
+typedef std::tuple<const GameState, const Action> QPair;
 
 namespace std {
   template <>
@@ -60,6 +60,7 @@ public:
   const std::string getBoard(const GameState& state);
   void displayBoard(const GameState& state);
   void displayGameEnd(const GameState& state);
+  void displayQPair(const GameState& state, const Action& action);
 
   GameState state_;
   int players = 2;

@@ -138,3 +138,20 @@ void TicTacToe::displayGameEnd(const GameState& state) {
     std::cout << "It was a tie!\n";
   }
 }
+
+void TicTacToe::displayQPair(const GameState& state, const Action& action) {
+  std::cout << "Displaying Q Pair:\n";
+  std::cout << "Action: " << action << "\n";
+  auto displayMoves = [&] (std::vector<Action> moves) {
+    std::cout << "[";
+    for (const auto& move : moves) {
+      std::cout << move << " ,";
+    }
+    std::cout << "]";
+  };
+  std::cout << "Game state: (";
+  displayMoves(state[0]);
+  std::cout << ", ";
+  displayMoves(state[1]);
+  std::cout << ")\n";
+}

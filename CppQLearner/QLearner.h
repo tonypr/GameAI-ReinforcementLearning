@@ -32,13 +32,12 @@ public:
     rng_.seed(ss);
   }
 
-  QLearnerMap Q_;
-
 protected:
+  QLearnerMap Q_;
   double alpha_;
   double epsilon_;
   double gamma_;
-  Game game_ = Game();
+  Game& game_;
 
 
   /* Used for generating randomness */
@@ -50,15 +49,14 @@ protected:
   const double getQ(const QPair qPair) {
     auto it = Q_.find(qPair);
     if (it != Q_.end()) {
-      // std::cout << "Show value: " << Q_[qPair] << "\n";
       return it->second;
-    } else {
-      Q_[qPair] = 0.0;
     }
-    return Q_[qPair];
+
+    double defaultValue = 0.0;
+    Q_.emplace(qPair, defaultValue);
+    return defaultValue;
   }
 
-public:
   /**
    * Given a game state, returns the best action known so far as well as its
    * Q value.
@@ -85,7 +83,7 @@ public:
 
     return std::make_tuple(maxAction, maxQ);
   }
-protected:
+
   /**
    * Explores an action for a given state and updates the Q value map
    * accordingly.
@@ -96,12 +94,8 @@ protected:
     const double qValue = getQ(qPair);
     const double maxQ = std::get<1>(bestQ(newState));
     const double qUpdate = game_.reward(newState, action) - gamma_ * maxQ - qValue;
-
-    Q_[qPair] = qValue + alpha_ * qUpdate;
-
-    // std::cout << "Max Q is: " << maxQ << "\n";
-    // std::cout << "Qupdate is: " << qUpdate << "\n";
-    // std::cout << "Qvalue is: " << Q_[qPair] << "\n";
+    const double newQValue = qValue + alpha_ * qUpdate;
+    Q_[qPair] = newQValue;
   }
 
   /**
@@ -170,8 +164,7 @@ public:
     }
   }
 
-  Game game_ = Game();
 private:
-
+  Game game_;
 };
 #endif
