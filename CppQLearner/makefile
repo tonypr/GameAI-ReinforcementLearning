@@ -7,8 +7,9 @@ SRCS = playTicTacToe.cpp TicTacToe.cpp
 build: $(OBJS)
 	$(CC) $(CPPFLAGS) -o $(PROG) $(OBJS)
 
+.PHONY: clean
 clean:
-	rm -f $(OBJS) $(PROG)
+	rm -f $(OBJS)
 
 depend:
 	makedepend -- $(CPPFLAGS) -- -Y $(SRCS)

@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <memory>
@@ -19,32 +18,16 @@ public:
   { }
 
   virtual const Action play(const GameState& state) {
-    auto actions = game_.actions(state);
-    int move;
-    while(true) {
-      std::cout << "Available moves:";
-      for (const auto& action : actions) {
-        std::cout << " " << action;
-      }
-      std::cout << "\n";
-      std::cout << "Please pick one of the available moves: ";
-      std::cin >> move;
-      if (std::find(actions.begin(), actions.end(), move) != actions.end()) {
-        return move;
-      } else {
-        std::cout << "That move is not available. Try again!";
-      }
-    }
+    return game_.getPlayerMove(state);
   }
 private:
-  Game game_ = Game();
+  Game game_;
 };
 
 template<class Game, typename GameState, typename Action, typename QPair, typename QLearnerMap>
 class AI : public Player<GameState, Action> {
 public:
   AI(Game& game, double epsilon, double alpha, double gamma) :
-    game_(game),
     gameAI_(game, alpha, epsilon, gamma)
   { }
 
@@ -60,10 +43,8 @@ public:
     gameAI_.learnGames(numGames);
   }
 
-  QLearnerGameAI<Game, GameState, Action, QPair, QLearnerMap> gameAI_;
 private:
-  Game game_ = Game();
-
+  QLearnerGameAI<Game, GameState, Action, QPair, QLearnerMap> gameAI_;
 };
 
 template<typename GameState, typename Action>
@@ -76,7 +57,7 @@ public:
     while (isGameRunning) {
       displayBoard(state);
       auto player = players[turn % players.size()];
-      const Action move = player->play(state);
+      const Action& move = player->play(state);
       state = takeAction(move);
       turn += 1;
     }
@@ -84,9 +65,8 @@ public:
   }
 
   virtual const GameState startNewGame();
-  virtual const GameState transition(const GameState& state, const Action& action);
   virtual const GameState takeAction(const Action& action);
-  virtual void displayBoard(const GameState& state);
-  virtual void displayGameEnd(const GameState& state);
+  virtual void displayBoard(const GameState& state) const;
+  virtual void displayGameEnd(const GameState& state) const;
   bool isGameRunning = false;
 };
