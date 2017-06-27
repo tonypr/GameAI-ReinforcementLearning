@@ -1,4 +1,5 @@
 import random
+from builtins import range
 
 class QLearner(object):
     def __init__(self, actions, transition, reward, epsilon, alpha, gamma):
@@ -58,14 +59,14 @@ class QLearnerGameAI(QLearner):
 
     def learnSteps(self, numSteps):
         state = self.game.startNewGame()
-        for i in xrange(numSteps):
+        for i in range(numSteps):
             action = self.exploreState(state)
             state = self.game.takeAction(action)
             if not self.game.isGameRunning:
                 state = self.game.startNewGame()
 
     def learnGames(self, numGames):
-        for i in xrange(numGames):
+        for i in range(numGames):
             state = self.game.startNewGame()
 
             while self.game.isGameRunning:

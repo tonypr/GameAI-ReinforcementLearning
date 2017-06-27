@@ -1,8 +1,9 @@
 from GameAI.QLearner import QLearnerGameAI
-import cPickle as pickle
+import pickle
 from os import path, makedirs
 import time
 import random
+from builtins import input
 
 def ensureDir(f):
     d = path.dirname(f)
@@ -29,14 +30,18 @@ class HumanPlayer(object):
         self.game = game
 
     def play(self, state):
-        actions = [str(a) for a in self.game.actions(state)]
+        actions = [a for a in self.game.actions(state)]
         while True:
-            print("Available moves: " + ", ".join(actions))
-            action = raw_input("Please pick one of the available moves: ")
-            if action in actions:
-                return int(action)
-            else:
+            print("Available moves: \n")
+            for ind, action in enumerate(actions):
+                print("{}: {}".format(ind + 1, str(action)))
+
+            index = input("Please pick one of the available moves: ")
+            index = int(index)
+            if index < 1 or index > len(actions):
                 print("That move is not available. Try again!")
+            else:
+                return actions[index - 1]
 
 class RandomPlayer(object):
     def __init__(self, game):
@@ -80,4 +85,4 @@ class AI(object):
         try:
             self.gameAI.Q, self.gameAI.numGamesLearned = pickle.load(open(filePath, "rb"))
         except IOError:
-            print "Error: couldn't find AI file - skipped loading AI."
+            print("Error: couldn't find AI file - skipped loading AI.")

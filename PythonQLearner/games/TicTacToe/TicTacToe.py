@@ -1,5 +1,5 @@
 from GameSetup import Game
-
+from builtins import range
 from os import path, makedirs
 
 scriptPath = path.abspath(__file__)
@@ -58,7 +58,7 @@ class TicTacToeGame(Game):
         return len(state[0]) + len(state[1]) == 9
 
     def checkGameOver(self, state, prevMove):
-        for player in xrange(1, self.players + 1):
+        for player in range(1, self.players + 1):
             if self.checkWin(state, player):
                 return player
         if self.checkTie(state):

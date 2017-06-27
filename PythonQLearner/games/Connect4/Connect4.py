@@ -1,6 +1,7 @@
 from GameSetup import Game
 
 from os import path, makedirs
+from builtins import range
 
 scriptPath = path.abspath(__file__)
 scriptDir = path.split(scriptPath)[0]
@@ -20,7 +21,7 @@ class Connect4Game(Game):
         self.isGameRunning = True
         self.state = self.start
         return self.state
-        
+
     def takeAction(self, action):
         self.state = self.transition(self.state, action)
         winner = self.checkGameOver(self.state, action)
@@ -58,21 +59,21 @@ class Connect4Game(Game):
         square_states = set()
 
         ## check possible wins
-        for j in xrange(4):
+        for j in range(4):
             if x-j >= 0 and x-j+3 < self.w:
-                horizontal_squares = tuple(state[x-j+i][y] for i in xrange(4))
+                horizontal_squares = tuple(state[x-j+i][y] for i in range(4))
                 square_states.add(horizontal_squares)
 
                 if y-j >= 0 and y-j+3 < self.h:
-                    diag_up_squares = tuple(state[x-j+i][y-j+i] for i in xrange(4))
+                    diag_up_squares = tuple(state[x-j+i][y-j+i] for i in range(4))
                     square_states.add(diag_up_squares)
 
                 if y+j-3 >= 0 and y+j < self.h:
-                    diag_down_squares = tuple(state[x-j+i][y+j-i] for i in xrange(4))
+                    diag_down_squares = tuple(state[x-j+i][y+j-i] for i in range(4))
                     square_states.add(diag_down_squares)
 
             if y-j >= 0 and y-j+3 < self.h:
-                vertical_squares = tuple(state[x][y-j+i] for i in xrange(4))
+                vertical_squares = tuple(state[x][y-j+i] for i in range(4))
                 square_states.add(vertical_squares)
 
         if all_1 in square_states:

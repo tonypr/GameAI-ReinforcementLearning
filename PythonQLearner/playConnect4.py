@@ -13,7 +13,7 @@ gamma = 0.9
 
 Connect4AI = AI(Connect4, epsilon, alpha, gamma)
 
-numGames = 100000
+numGames = 10
 Connect4AI.learnGames(numGames)
 
 players = [human, Connect4AI]
