@@ -96,11 +96,12 @@ def parse_arguments():
         required=False,
         help="Gamma.")
     _args = vars(parser.parse_args())
-    settings.update((k,v) for k, v in _args.items() if v is not None)
 
     # Read configuration file
     if 'configuration_file' in settings and settings['configuration_file']:
         update_settings(settings, settings["configuration_file"])
+
+    settings.update((k,v) for k, v in _args.items() if v is not None)
     players = [settings["player_1"], settings["player_2"]]
 
     settings['game'] = games[settings['game']]
