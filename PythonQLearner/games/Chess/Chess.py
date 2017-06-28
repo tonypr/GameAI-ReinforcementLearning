@@ -2,6 +2,7 @@ import chess
 
 from GameSetup import Game
 
+
 class ChessGame(Game):
     def __init__(self):
         self.name = "Chess"
@@ -50,8 +51,10 @@ class ChessGame(Game):
         self.displayBoard(state)
         state = chess.Board(state)
         winner = state.result()
-        msg = {'1-0': 'White won!',
-               '0-1': 'Black won!',
-               '1/2-1/2': 'It was a tie!',
-               '*': 'Oops! Game still in play'}
+        msg = {
+            '1-0': 'White won!',
+            '0-1': 'Black won!',
+            '1/2-1/2': 'It was a tie!',
+            '*': 'Oops! Game still in play'
+        }
         print(msg[winner])

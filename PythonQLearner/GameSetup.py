@@ -5,10 +5,12 @@ import time
 import random
 from builtins import input
 
+
 def ensureDir(f):
     d = path.dirname(f)
     if not path.exists(d):
         makedirs(d)
+
 
 class Game(object):
     def playGame(self, players):
@@ -24,6 +26,7 @@ class Game(object):
             turn += 1
         self.displayGameEnd(state)
         return self.checkGameOver(state, move)
+
 
 class HumanPlayer(object):
     def __init__(self, game):
@@ -43,6 +46,7 @@ class HumanPlayer(object):
             else:
                 return actions[index - 1]
 
+
 class RandomPlayer(object):
     def __init__(self, game):
         self.game = game
@@ -51,6 +55,7 @@ class RandomPlayer(object):
         actions = self.game.actions(state)
         time.sleep(1)
         return random.choice(actions)
+
 
 class AI(object):
     def __init__(self, game, epsilon, alpha, gamma):
@@ -74,7 +79,6 @@ class AI(object):
         ensureDir(gamePath)
         return filePath
 
-
     def saveAI(self, name):
         filePath = self.getAIFilePath(name)
         AI_info = (self.gameAI.Q, self.gameAI.numGamesLearned)
@@ -83,6 +87,10 @@ class AI(object):
     def loadAI(self, name):
         filePath = self.getAIFilePath(name)
         try:
-            self.gameAI.Q, self.gameAI.numGamesLearned = pickle.load(open(filePath, "rb"))
+            self.gameAI.Q, self.gameAI.numGamesLearned = pickle.load(
+                open(filePath, "rb"))
         except IOError:
             print("Error: couldn't find AI file - skipped loading AI.")
+
+
+players_map = {"Human": HumanPlayer, "Random": RandomPlayer, "AI": AI}

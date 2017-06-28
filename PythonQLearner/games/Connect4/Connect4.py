@@ -7,6 +7,7 @@ scriptPath = path.abspath(__file__)
 scriptDir = path.split(scriptPath)[0]
 AIsDirectory = path.join(scriptDir, "AIs/")
 
+
 class Connect4Game(Game):
     def __init__(self):
         self.name = "Connect4"
@@ -14,7 +15,7 @@ class Connect4Game(Game):
         self.players = 2
         self.w = 7
         self.h = 6
-        self.start = tuple([(0,)*self.h for i in range(self.w)])
+        self.start = tuple([(0, ) * self.h for i in range(self.w)])
         self.isGameRunning = False
 
     def startNewGame(self):
@@ -30,7 +31,7 @@ class Connect4Game(Game):
         return self.state
 
     def actions(self, state):
-        return [i+1 for i in range(self.w) if state[i][-1] == 0]
+        return [i + 1 for i in range(self.w) if state[i][-1] == 0]
 
     def transition(self, state, action):
         column = action - 1
@@ -53,27 +54,30 @@ class Connect4Game(Game):
         return moves
 
     def check_square(self, state, x, y):
-        all_1 = (1,1,1,1)
-        all_2 = (2,2,2,2)
+        all_1 = (1, 1, 1, 1)
+        all_2 = (2, 2, 2, 2)
 
         square_states = set()
 
         ## check possible wins
         for j in range(4):
-            if x-j >= 0 and x-j+3 < self.w:
-                horizontal_squares = tuple(state[x-j+i][y] for i in range(4))
+            if x - j >= 0 and x - j + 3 < self.w:
+                horizontal_squares = tuple(state[x - j + i][y]
+                                           for i in range(4))
                 square_states.add(horizontal_squares)
 
-                if y-j >= 0 and y-j+3 < self.h:
-                    diag_up_squares = tuple(state[x-j+i][y-j+i] for i in range(4))
+                if y - j >= 0 and y - j + 3 < self.h:
+                    diag_up_squares = tuple(state[x - j + i][y - j + i]
+                                            for i in range(4))
                     square_states.add(diag_up_squares)
 
-                if y+j-3 >= 0 and y+j < self.h:
-                    diag_down_squares = tuple(state[x-j+i][y+j-i] for i in range(4))
+                if y + j - 3 >= 0 and y + j < self.h:
+                    diag_down_squares = tuple(state[x - j + i][y + j - i]
+                                              for i in range(4))
                     square_states.add(diag_down_squares)
 
-            if y-j >= 0 and y-j+3 < self.h:
-                vertical_squares = tuple(state[x][y-j+i] for i in range(4))
+            if y - j >= 0 and y - j + 3 < self.h:
+                vertical_squares = tuple(state[x][y - j + i] for i in range(4))
                 square_states.add(vertical_squares)
 
         if all_1 in square_states:
@@ -135,7 +139,7 @@ class Connect4Game(Game):
     def bottom_board(self, w):
         row_list = [" "]
         for i in range(w):
-            row_list.append(str(i+1))
+            row_list.append(str(i + 1))
             row_list.append(" ")
         row_list.append("\n")
         row_str = "".join(row_list)
@@ -147,11 +151,11 @@ class Connect4Game(Game):
 
         board = "\n"
 
-        horizontal_line = "-"*(2*w+1) + "\n"
+        horizontal_line = "-" * (2 * w + 1) + "\n"
         board += horizontal_line
 
         for i in range(h):
-            row_from_top = self.row_board(state, h-i-1, w)
+            row_from_top = self.row_board(state, h - i - 1, w)
             board += row_from_top
             board += horizontal_line
         board += self.bottom_board(w)

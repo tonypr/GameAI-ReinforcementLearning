@@ -6,6 +6,7 @@ scriptPath = path.abspath(__file__)
 scriptDir = path.split(scriptPath)[0]
 AIsDirectory = path.join(scriptDir, "AIs/")
 
+
 class TicTacToeGame(Game):
     def __init__(self):
         self.name = "TicTacToe"
@@ -28,7 +29,10 @@ class TicTacToeGame(Game):
         return self.state
 
     def actions(self, state):
-        return [i for i in range(1, 10) if (i not in state[0] and i not in state[1])]
+        return [
+            i for i in range(1, 10)
+            if (i not in state[0] and i not in state[1])
+        ]
 
     def transition(self, state, action):
         assert action in self.actions(state)
@@ -41,7 +45,8 @@ class TicTacToeGame(Game):
 
     def checkWin(self, state, player):
         plays = state[player - 1]
-        wins = [(1,2,3), (4,5,6), (7,8,9), (1,4,7), (2,5,8), (3,6,9), (1,5,9), (3,5,7)]
+        wins = [(1, 2, 3), (4, 5, 6), (7, 8, 9), (1, 4, 7), (2, 5, 8),
+                (3, 6, 9), (1, 5, 9), (3, 5, 7)]
         won = False
         for win in wins:
             win_check = True
@@ -78,10 +83,10 @@ class TicTacToeGame(Game):
         circle = state[1]
 
         for play in x:
-            board[play-1] = "X"
+            board[play - 1] = "X"
 
         for play in circle:
-            board[play-1] = "O"
+            board[play - 1] = "O"
 
         return board
 

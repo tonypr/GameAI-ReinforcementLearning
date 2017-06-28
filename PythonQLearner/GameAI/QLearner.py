@@ -1,6 +1,7 @@
 import random
 from builtins import range
 
+
 class QLearner(object):
     def __init__(self, actions, transition, reward, epsilon, alpha, gamma):
         self.actions = actions
@@ -47,9 +48,11 @@ class QLearner(object):
         self.updateQ(state, action)
         return action
 
+
 class QLearnerGameAI(QLearner):
     def __init__(self, game, epsilon, alpha, gamma):
-        QLearner.__init__(self, game.actions, game.transition, game.reward, epsilon, alpha, gamma)
+        QLearner.__init__(self, game.actions, game.transition, game.reward,
+                          epsilon, alpha, gamma)
         self.game = game
         self.numGamesLearned = 0
 
