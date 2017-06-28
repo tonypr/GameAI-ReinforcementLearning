@@ -13,7 +13,7 @@ python:
   - "nightly" # currently points to 3.7-dev
 
 sudo: false
-install: "pip install -r requirements.txt"
+install: "pip install -r PythonQLearner/requirements.txt"
 
 # command to run tests
 script:
