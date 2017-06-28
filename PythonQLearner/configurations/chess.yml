@@ -1,0 +1,8 @@
+game: "Chess"
+num_games: "1000"
+play: True
+player_1: "Human"
+player_2: "AI"
+epsilon: 0.3
+alpha: 0.9
+gamma: 0.9
