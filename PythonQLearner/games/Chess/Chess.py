@@ -27,12 +27,10 @@ class ChessGame(Game):
 
     def transition(self, state, action):
         state = chess.Board(state)
-        print(action)
         state.push(action)
         return state.fen()
 
     def reward(self, state, action):
-        print(state)
         state = chess.Board(state)
         if state.result() == '1-0' or state.result() == '0-1':
             return 1
