@@ -1,9 +1,11 @@
 # GameAI-ReinforcementLearning
+[![Build Status](https://travis-ci.org/tonypr/GameAI-ReinforcementLearning.svg?branch=master)](https://travis-ci.org/tonypr/GameAI-ReinforcementLearning)
+
 Library for creating game AIs using Reinforcement Learning with the Q Learning algorithm.
 
 ## Getting Started
 
-To get started you can git clone this project to your system and then run either the Cpp or Python version of the code. 
+To get started you can git clone this project to your system and then run either the Cpp or Python version of the code.
 
 ## License
 

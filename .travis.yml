@@ -11,9 +11,15 @@ python:
   - "nightly" # currently points to 3.7-dev
 
 sudo: false
-install: "pip install -r PythonQLearner/requirements.txt"
+install:
+  - pip install -r PythonQLearner/requirements.txt
+  - pip install coveralls
 
 # command to run tests
 script:
   - cd PythonQLearner
   - python -m unittest discover
+  - coverage run --source=. -m unittest discover
+
+after_success:
+  coveralls
