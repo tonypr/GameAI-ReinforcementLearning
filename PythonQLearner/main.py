@@ -40,7 +40,7 @@ def parse_arguments():
         required=False,
         help="Number of games to train. E.g. 1000")
     parser.add_argument(
-        "-p", "--play", type=bool, required=False, help="Play game")
+        "-p", "--play", type=str, required=False, help="Play game", default="False", choices=["True", "False"])
     parser.add_argument(
         "-p1",
         "--player_1",
@@ -59,18 +59,23 @@ def parse_arguments():
         "-a", "--alpha", type=float, required=False, help="Alpha.")
     parser.add_argument("--gamma", type=float, required=False, help="Gamma.")
     _args = vars(parser.parse_args())
+    print(_args)
 
     # Read configuration file
-    if 'configuration_file' in settings and settings['configuration_file']:
-        update_settings(settings, settings["configuration_file"])
+    if _args['configuration_file'] is not None:
+        update_settings(settings, _args["configuration_file"])
 
     settings.update((k, v) for k, v in _args.items() if v is not None)
+
+    if _args["play"] is not None:
+        settings["play"] = _args["play"] == "True"
+
     players = [settings["player_1"], settings["player_2"]]
 
     settings['game'] = games[settings['game']]
     settings['num_games'] = conv_num_games(settings['num_games'])
     settings['players'] = [players_map[player] for player in players]
-
+    print(settings)
     return settings
 
 

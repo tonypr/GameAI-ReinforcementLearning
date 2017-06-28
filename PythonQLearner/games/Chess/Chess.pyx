@@ -12,14 +12,14 @@ class ChessGame(Game):
 
     def startNewGame(self):
         self.isGameRunning = True
-        self.state = self.start
+        self.stateBoard = chess.Board()
+        self.state = self.stateBoard.fen()
         return self.state
 
     def takeAction(self, action):
-        self.state = self.transition(self.state, action)
-        state = chess.Board(self.state)
-        if state.is_game_over():
-            self.isGameRunning = False
+        self.stateBoard.push(action)
+        self.state = self.stateBoard.fen()
+        self.isGameRunning = not self.stateBoard.is_game_over()
         return self.state
 
     def actions(self, state):

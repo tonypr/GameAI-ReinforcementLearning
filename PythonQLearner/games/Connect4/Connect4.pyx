@@ -1,17 +1,10 @@
 from GameSetup import Game
 
-from os import path, makedirs
 from builtins import range
-
-scriptPath = path.abspath(__file__)
-scriptDir = path.split(scriptPath)[0]
-AIsDirectory = path.join(scriptDir, "AIs/")
-
 
 class Connect4Game(Game):
     def __init__(self):
         self.name = "Connect4"
-        self.AIpath = AIsDirectory
         self.players = 2
         self.w = 7
         self.h = 6

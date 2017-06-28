@@ -1,16 +1,10 @@
 from GameSetup import Game
 from builtins import range
-from os import path, makedirs
-
-scriptPath = path.abspath(__file__)
-scriptDir = path.split(scriptPath)[0]
-AIsDirectory = path.join(scriptDir, "AIs/")
 
 
 class TicTacToeGame(Game):
     def __init__(self):
         self.name = "TicTacToe"
-        self.AIpath = AIsDirectory
         self.players = 2
         self.start = ((), ())
         self.isGameRunning = False

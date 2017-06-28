@@ -14,9 +14,10 @@ sudo: false
 install:
   - pip install -r PythonQLearner/requirements.txt
   - pip install coveralls
-
+  - pip install Cython --install-option="--no-cython-compile"
 # command to run tests
 script:
+  - python setup.py build_ext --inplace
   - cd PythonQLearner
   - python -m unittest discover
   - coverage run --source=. -m unittest discover
