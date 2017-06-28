@@ -1,3 +1,2 @@
 python_chess==0.18.2
-chess==0.1
 PyYAML==3.12
