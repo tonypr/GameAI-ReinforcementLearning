@@ -17,8 +17,8 @@ install:
   - pip install Cython --install-option="--no-cython-compile"
 # command to run tests
 script:
-  - python setup.py build_ext --inplace
   - cd PythonQLearner
+  - python setup.py build_ext --inplace
   - python -m unittest discover
   - coverage run --source=. -m unittest discover
 
