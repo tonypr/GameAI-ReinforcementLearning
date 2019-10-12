@@ -1,3 +1,1 @@
-from __future__ import absolute_import
-
-from games.TicTacToe.TicTacToe import TicTacToeGame
+from .TicTacToe import TicTacToeGame
