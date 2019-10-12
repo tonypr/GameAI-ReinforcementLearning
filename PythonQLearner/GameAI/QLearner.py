@@ -13,29 +13,26 @@ class QLearner(object):
         self.gamma = gamma
         self.Q = defaultdict(int)
 
-    def getQ(self, q_pair):
-        return self.Q[q_pair]
-        
-    def bestQ(self, state):
+    def best_q(self, state):
         actions = self.actions(state)
         if len(actions) == 0:
             return 0, 0
         maxAction = random.choice(actions)
-        maxQ = self.getQ((state, maxAction))
+        maxQ = self.Q[(state, maxAction)]
 
         for action in actions:
             q_pair = (state, action)
-            curQ = self.getQ(q_pair)
+            curQ = self.Q[q_pair]
             if curQ > maxQ:
                 maxAction, maxQ = action, curQ
         return (maxAction, maxQ)
 
-    def updateQ(self, state, action):
+    def update_q(self, state, action):
         new_state = self.transition(state, action)
         reward = self.reward(new_state, action)
         q_pair = (state, action)
-        q_value = self.getQ(q_pair)
-        q_update = reward - self.gamma * self.bestQ(new_state)[1] - q_value
+        q_value = self.Q[q_pair]
+        q_update = reward - self.gamma * self.best_q(new_state)[1] - q_value
         self.Q[q_pair] += self.alpha * q_update
 
     def exploreState(self, state):
@@ -43,8 +40,8 @@ class QLearner(object):
         if rand < self.epsilon:
             action = random.choice(self.actions(state))
         else:
-            action = self.bestQ(state)[0]
-        self.updateQ(state, action)
+            action = self.best_q(state)[0]
+        self.update_q(state, action)
         return action
 
 
@@ -56,7 +53,7 @@ class QLearnerGameAI(QLearner):
         self.numGamesLearned = 0
 
     def learnedMove(self, state):
-        move = self.bestQ(state)[0]
+        move = self.best_q(state)[0]
         return move
 
     def learnSteps(self, numSteps):
