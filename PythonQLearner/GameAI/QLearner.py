@@ -1,5 +1,6 @@
 import random
 from builtins import range
+from collections import defaultdict
 
 
 class QLearner(object):
@@ -10,13 +11,11 @@ class QLearner(object):
         self.epsilon = epsilon
         self.alpha = alpha
         self.gamma = gamma
-        self.Q = {}
+        self.Q = defaultdict(int)
 
     def getQ(self, q_pair):
-        if q_pair not in self.Q:
-            self.Q[q_pair] = 0
         return self.Q[q_pair]
-
+        
     def bestQ(self, state):
         actions = self.actions(state)
         if len(actions) == 0:
