@@ -1,5 +1,4 @@
 import random
-from builtins import range
 from collections import defaultdict
 
 
@@ -23,19 +22,21 @@ class QLearner(object):
         max_q = self.Q[(state, max_action)]
 
         for action in actions:
-            q_pair = (state, action)
-            cur_q = self.Q[q_pair]
+            cur_q = self.Q[(state, action)]
             if cur_q > max_q:
                 max_action, max_q = action, cur_q
-                
+
         return (max_action, max_q)
 
     def update_q(self, state, action):
         new_state = self.transition(state, action)
         reward = self.reward(new_state, action)
+        
         q_pair = (state, action)
         q_value = self.Q[q_pair]
+        
         q_update = reward - self.gamma * self.best_q(new_state)[1] - q_value
+
         self.Q[q_pair] += self.alpha * q_update
 
     def explore_state(self, state):
@@ -54,7 +55,7 @@ class QLearnerGameAI(QLearner):
         QLearner.__init__(self, game.actions, game.transition, game.reward,
                           epsilon, alpha, gamma)
         self.game = game
-        self.numGamesLearned = 0
+        self.num_games_learned = 0
 
     def learnedMove(self, state):
         move = self.best_q(state)[0]
@@ -76,4 +77,4 @@ class QLearnerGameAI(QLearner):
                 action = self.explore_state(state)
                 state = self.game.takeAction(action)
 
-            self.numGamesLearned += 1
+            self.num_games_learned += 1
