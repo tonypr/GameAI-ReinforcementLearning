@@ -81,13 +81,13 @@ class AI(object):
 
     def saveAI(self, name):
         filePath = self.getAIFilePath(name)
-        AI_info = (self.gameAI.Q, self.gameAI.numGamesLearned)
+        AI_info = (self.gameAI.Q, self.gameAI.num_games_learned)
         pickle.dump(AI_info, open(filePath, "wb"))
 
     def loadAI(self, name):
         filePath = self.getAIFilePath(name)
         try:
-            self.gameAI.Q, self.gameAI.numGamesLearned = pickle.load(
+            self.gameAI.Q, self.gameAI.num_games_learned = pickle.load(
                 open(filePath, "rb"))
         except IOError:
             print("Error: couldn't find AI file - skipped loading AI.")

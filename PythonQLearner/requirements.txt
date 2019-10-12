@@ -1,4 +1,2 @@
-future==0.16.0
 python_chess==0.18.2
-PyYAML==3.12
-six==1.4.1
+PyYAML==4.2b1

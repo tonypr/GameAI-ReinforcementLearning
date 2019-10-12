@@ -19,15 +19,16 @@ class QLearner(object):
         if len(actions) == 0:
             return 0, 0
 
-        maxAction = random.choice(actions)
-        maxQ = self.Q[(state, maxAction)]
+        max_action = actions[0]
+        max_q = self.Q[(state, max_action)]
 
         for action in actions:
             q_pair = (state, action)
-            curQ = self.Q[q_pair]
-            if curQ > maxQ:
-                maxAction, maxQ = action, curQ
-        return (maxAction, maxQ)
+            cur_q = self.Q[q_pair]
+            if cur_q > max_q:
+                max_action, max_q = action, cur_q
+                
+        return (max_action, max_q)
 
     def update_q(self, state, action):
         new_state = self.transition(state, action)
@@ -38,12 +39,13 @@ class QLearner(object):
         self.Q[q_pair] += self.alpha * q_update
 
     def explore_state(self, state):
-        rand = random.random()
-        if rand < self.epsilon:
+        if random.random() < self.epsilon:
             action = random.choice(self.actions(state))
         else:
             action = self.best_q(state)[0]
+
         self.update_q(state, action)
+        
         return action
 
 
