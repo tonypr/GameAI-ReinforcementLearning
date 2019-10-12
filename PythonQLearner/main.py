@@ -87,7 +87,7 @@ def main():
     gameAI = AI(game, settings['epsilon'], settings['alpha'],
                 settings['gamma'])
 
-    gameAI.learnGames(settings['num_games'])
+    gameAI.learn_games(settings['num_games'])
 
     if settings['play']:
         players = [human, gameAI]

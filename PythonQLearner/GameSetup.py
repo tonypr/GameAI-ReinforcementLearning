@@ -62,15 +62,15 @@ class AI(object):
         self.game = game
         self.gameAI = QLearnerGameAI(game, epsilon, alpha, gamma)
 
-    def learnSteps(self, numSteps):
-        self.gameAI.learnSteps(numSteps)
+    def learn_steps(self, numSteps):
+        self.gameAI.learn_steps(numSteps)
 
-    def learnGames(self, numGames):
-        self.gameAI.learnGames(numGames)
+    def learn_games(self, numGames):
+        self.gameAI.learn_games(numGames)
 
     def play(self, state):
         time.sleep(1)
-        return self.gameAI.learnedMove(state)
+        return self.gameAI.learned_move(state)
 
     def getAIFilePath(self, name):
         gamePath = self.game.AIpath

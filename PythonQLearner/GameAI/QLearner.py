@@ -57,11 +57,11 @@ class QLearnerGameAI(QLearner):
         self.game = game
         self.num_games_learned = 0
 
-    def learnedMove(self, state):
+    def learned_move(self, state):
         move = self.best_q(state)[0]
         return move
 
-    def learnSteps(self, num_steps):
+    def learn_steps(self, num_steps):
         state = self.game.startNewGame()
         for i in range(num_steps):
             action = self.explore_state(state)
@@ -69,7 +69,7 @@ class QLearnerGameAI(QLearner):
             if not self.game.isGameRunning:
                 state = self.game.startNewGame()
 
-    def learnGames(self, num_games):
+    def learn_games(self, num_games):
         for i in range(num_games):
             state = self.game.startNewGame()
 
